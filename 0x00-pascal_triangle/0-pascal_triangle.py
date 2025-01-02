@@ -1,23 +1,22 @@
 #!/usr/bin/python3
-"""
-Pascal triangle representation
-"""
+'''
+Pascal's triangle implementation
+'''
+
 
 def pascal_triangle(n):
     '''
-    Returns an empty list if n <= 0
+    Returns an empty list if n <= 0.
     '''
-    if n <= 0:
-        return []        
-
-    triangle = [[1]]
-
-    for row_index in range(1, n):
-        row = [1]
-
-        for i in range(1, row_index):
-            row.append(triangle[row_index - 1][i - 1] + triangle[row_index - 1][i])
-
-        row.append(1)
-    triangle.append(row)
+    triangle = []
+    if type(n) is not int or n <= 0:
+        return triangle
+    for i in range(n):
+        row = []
+        for j in range(i + 1):
+            if j == 0 or j == i:
+                row.append(1)
+            elif i > 0 and j > 0:
+                row.append(triangle[i - 1][j - 1] + triangle[i - 1][j])
+        triangle.append(row)
     return triangle
