@@ -1,3 +1,7 @@
+#!/usr/bin/python3
+'''A module for working with lockboxes.
+'''
+
 def canUnlockAll(boxes):
     unlocked = {0}
     keys = [0]
