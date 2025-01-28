@@ -19,7 +19,8 @@ def output(log: dict) -> None:
 
 if __name__ == "__main__":
     regex = re.compile(
-            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d+\] "GET /projects/260 HTTP/1.1" (.{3}) (\d+)')
+            r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} - \[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.\d+\]
+             "GET /projects/260 HTTP/1.1" (.{3}) (\d+)')
 
     line_count = 0
     log = {}
@@ -37,7 +38,7 @@ if __name__ == "__main__":
                 line_count += 1
                 code = match.group(1)
                 file_size = int(match.group(2))
-                
+
                 # File size
                 log["file_size"] += file_size
 
