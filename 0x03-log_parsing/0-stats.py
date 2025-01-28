@@ -7,7 +7,7 @@ import sys
 
 if __name__ == '__main__':
 
-    filesize, total = 0, 0
+    filesize, count = 0, 0
     codes = ["200", "301", "400", "401", "403", "404", "405", "500"]
     stats = {k: 0 for k in codes}
 
@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
     try:
         for line in sys.stdin:
-            total += 1
+            count += 1
             data = line.split()
             try:
                 status_code = data[-2]
@@ -31,7 +31,7 @@ if __name__ == '__main__':
                 filesize += int(data[-1])
             except BaseException:
                 pass
-            if total % 10 == 0:
+            if count % 10 == 0:
                 print_stats(stats, filesize)
         print_stats(stats, filesize)
     except KeyboardInterrupt:
