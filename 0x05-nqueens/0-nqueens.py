@@ -1,89 +1,69 @@
 #!/usr/bin/python3
-""" Placing N non-attacking queens on an NN chessboard. """
 import sys
 
-
-matrix = []  # global variables
-board = []  # global variables
-
-
-def result():
-    """ Prints result. """
-    for row in range(len(board)):
-        for col in range(len(board[row])):
-            if board[row][col] == 1:  # if a queen is met
-                matrix[row][1] = col  # matrix stores the column
-    return matrix
+def printSolution(board):
+    """Print the positions of the queens"""
+    solution = []
+    for i in range(len(board)):
+        solution.append([i, board[i]])
+    print(solution)
 
 
-def backtrack(r, n, col, posDiag, negDiag):
-    """ Recursive function. """
-    global board
-    if r == n:  # end of row
-        print(result())  # print solution
-        return
-
-    for c in range(n):
-        # checks if the queen can be in given column without
-        # attacking other queens, it also checks the positive
-        # and negative diagonals. If an attack is possible, it
-        # goes to the next column until the end of the row or
-        # there is no possible attack.
-        if c in col or (r + c) in posDiag or (r - c) in negDiag:
-            continue
-
-        # adds the row combinations to the set
-        col.add(c)
-        posDiag.add(r + c)
-        negDiag.add(r - c)
-        # board is updated to 1 to indicate that a queen
-        # is present in that position
-        board[r][c] = 1
-
-        # the function moves to the next row and runs again
-        backtrack(r + 1, n, col, posDiag, negDiag)
-
-        # in the event that a queen can't be placed in any column,
-        # backtracking happens and the previous queen is moved
-        # hence the combinations of the previous queen need to be
-        # reset to 0
-        col.remove(c)
-        posDiag.remove(r + c)
-        negDiag.remove(r - c)
-        # board is updated to 0 to indicate that a queen
-        # is no longer in that position
-        board[r][c] = 0
+def isSafe(board, row, col, N):
+    """Check if placing a queen at (row, col) is safe"""
+    for i in range(col):
+        if board[i] == row or \
+           board[i] - i == row - col or \
+           board[i] + i == row + col:
+            return False
+    return True
 
 
-def solve_n_queens(n):
-    """ Solve N Queens. """
-    col = set()
-    posDiag = set()
-    negDiag = set()
+def solveNQUtil(board, col, N):
+    """Use backtracking to solve the N queens problem"""
+    if col == N:
+        printSolution(board)
+        return True
 
-    global matrix
-    global board
-    matrix = [[c + r for c in range(2)] for r in range(n)]
-    board = [[0 for i in range(n)] for i in range(n)]
+    res = False
+    for i in range(N):
+        if isSafe(board, i, col, N):
+            board[col] = i
+            res = solveNQUtil(board, col + 1, N) or res
+            board[col] = -1  # backtrack
+    return res
 
-    # call backtrack to place our queens
-    backtrack(0, n, col, posDiag, negDiag)
+
+def solveNQ(N):
+    """Initialize the board and start solving"""
+    if N < 4:
+        print(f"{N} must be at least 4")
+        sys.exit(1)
+
+    if not isinstance(N, int):
+        print("N must be a number")
+        sys.exit(1)
+
+    board = [-1] * N  # Board initialized with -1 (no queens placed)
+    if not solveNQUtil(board, 0, N):
+        print("Solution does not exist")
+        sys.exit(1)
 
 
-if len(sys.argv) != 2:  # wrong number of arguments
-    print("Usage: nqueens N")
-    sys.exit(1)
+def main():
+    """Main function to handle input and run the solution"""
+    if len(sys.argv) != 2:
+        print("Usage: nqueens N")
+        sys.exit(1)
 
-num = sys.argv[1]
+    try:
+        N = int(sys.argv[1])
+    except ValueError:
+        print("N must be a number")
+        sys.exit(1)
 
-try:
-    num_int = int(num)
-except ValueError:  # N must be an int
-    print("N must be a number")
-    sys.exit(1)
+    solveNQ(N)
 
-if num_int < 4:  # N must be greater than or equal to 4
-    print("N must be at least 4")
-    sys.exit(1)
 
-solve_n_queens(num_int)
+if __name__ == '__main__':
+    main()
